@@ -1,0 +1,64 @@
+{{ define "threads/thread.tmpl" }}
+    <html>
+
+
+    {{- range $thread := .threads }}
+        <div>
+            <h3> Click: <a href="/threads/{{ $thread.Id }}">{{ $thread.Title }}</a></h3>
+            <ul>
+                {{- range $message := $thread.Messages }}
+                    <div class="message">{{ $message.Message }}</div>
+                {{- else }}
+                    <li>No messages available</li>
+                {{- end }}
+            </ul>
+        </div>
+        <form action="/threads/{{$thread.Id}}" method="POST">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="submit" value="Delete">
+        </form>
+        <hr/>
+
+    {{ else }}
+        <p>No threads available</p>
+
+
+    {{- end }}
+
+
+    <br>
+    <style>
+
+        body {
+            background: #c31432; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #c31432, #240b36); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #c31432, #240b36); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+
+        h3 {
+            font-family: "Inter Semi Bold";
+            font-size: 11px;
+            line-height: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: white;
+
+        }
+
+        a {
+            text-decoration: none;
+            color: burlywood;
+        }
+
+        .message {
+            margin-left: 15px;
+            display: flex;
+            margin-top: 10px;
+            color: white;
+        }
+    </style>
+    </html>
+{{ end }}
+
+
