@@ -32,11 +32,11 @@ func GetThreadRoutes() *gin.Engine {
 	})
 
 	router.GET("/addThread/threads", func(c *gin.Context) {
-		AddThread(c, db)
+		GetAddThreadForm(c, db)
 	})
 
 	router.POST("/addThread/threads", func(c *gin.Context) {
-		AddnewThread(c, db)
+		AddNewThread(c, db)
 	})
 	router.GET("/edit/:id", func(c *gin.Context) {
 		EditThreadById(c, db)

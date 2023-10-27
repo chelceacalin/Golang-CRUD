@@ -2,9 +2,8 @@
     <html lang="en">
 
     <a href="/addThread/threads" class="nav">Add</a>
-
-    {{- range $thread := .threads }}
     <div id="container">
+    {{- range $thread := .threads }}
         <h3> Click: <a href="/threads/{{ $thread.Id }}">{{ $thread.Title }}</a></h3>
         <ul>
             {{- range $message := $thread.Messages }}
@@ -19,11 +18,16 @@
         </form>
         <hr/>
         {{ else }}
-            <p>No threads available</p>
+            <p class="noThreads">No threads available</p>
         {{- end }}
     </div>
 
     <style>
+        .noThreads{
+            color: white;
+            padding:20px;
+            font-size: 25px;
+        }
         #container {
             display: block;
             margin: 25px 5% 2% 5%;

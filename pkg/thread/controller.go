@@ -33,7 +33,6 @@ func GetThreads(c *gin.Context, db *sql.DB) {
 		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
-			fmt.Println("ciuciu", err)
 			c.String(http.StatusInternalServerError, "Error scanning rows")
 			return
 		}
@@ -99,6 +98,38 @@ func GetThreadById(c *gin.Context, db *sql.DB) {
 		"messages": thread.Messages,
 	})
 }
+func AddNewThread(c *gin.Context, db *sql.DB) {
+	threadId := rand.Intn(2147483647)
+	title, ok := c.GetPostForm("title")
+	if !ok {
+		fmt.Println("EROARE ")
+	}
+
+	message, ok := c.GetPostForm("message")
+	if !ok {
+		fmt.Println("Nu am receptionat mesaju ")
+	}
+	messageId := rand.Intn(2147483647)
+
+	// Convert messageId and threadId to integers
+	messageIdStr := strconv.Itoa(messageId)
+	threadIdStr := strconv.Itoa(threadId)
+
+	_, err := db.Exec("INSERT INTO message VALUES ($1, $2, $3)", messageIdStr, message, threadIdStr)
+	if err != nil {
+		fmt.Println("Error inserting message for thread", err)
+		c.String(http.StatusInternalServerError, "Error inserting message for thread", err)
+		return
+	}
+
+	_, err = db.Exec("INSERT INTO Thread VALUES ($1, $2)", threadIdStr, title)
+	if err != nil {
+		fmt.Println("Error inserting thread", err)
+		c.String(http.StatusInternalServerError, "Error inserting thread", err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/threads")
+}
 
 func DeleteThreadById(c *gin.Context, db *sql.DB) {
 	threadId, err := strconv.Atoi(c.Param("id"))
@@ -109,63 +140,27 @@ func DeleteThreadById(c *gin.Context, db *sql.DB) {
 
 	_, err = db.Exec("DELETE FROM message WHERE thread_id = $1", threadId)
 	if err != nil {
-		fmt.Println("Error deleting messages")
-		c.String(http.StatusInternalServerError, "Error deleting messages")
+		c.String(http.StatusInternalServerError, "Error deleting messages", err)
 		return
 	}
 
 	_, err = db.Exec("DELETE FROM thread WHERE id = $1", threadId)
 	if err != nil {
-		fmt.Println("Error deleting thread")
-		c.String(http.StatusInternalServerError, "Error deleting thread")
+		c.String(http.StatusInternalServerError, "Error deleting thread", err)
 		return
 	}
-
-	GetThreads(c, db)
+	c.Redirect(http.StatusFound, "/threads")
 }
 
-func AddThread(c *gin.Context, db *sql.DB) {
+func GetAddThreadForm(c *gin.Context, db *sql.DB) {
 	c.HTML(http.StatusOK, "addThread/thread.tmpl", gin.H{})
-}
-
-func AddnewThread(c *gin.Context, db *sql.DB) {
-	id := rand.Intn(2147483647)
-	title, ok := c.GetPostForm("title")
-	if len(title) < 2 {
-		GetThreads(c, db)
-		return
-	}
-	if !ok {
-		fmt.Println("EROARE ")
-	}
-
-	message, ok := c.GetPostForm("message")
-	if !ok {
-		fmt.Println("EROARE Mesage ")
-	}
-	messageId := strconv.Itoa(rand.Intn(2147483647))
-
-	_, err := db.Exec("insert into message values($1,$2,$3)", messageId, message, id)
-	if err != nil {
-		fmt.Println("Error inserting message", err)
-		c.String(http.StatusInternalServerError, "Error deleting messages")
-		return
-	}
-
-	_, err = db.Exec("insert into Thread values($1,$2)", id, title)
-	if err != nil {
-		fmt.Println("Error inserting thread", err)
-		c.String(http.StatusInternalServerError, "Error deleting messages")
-		return
-	}
-	GetThreads(c, db)
 }
 
 func EditThreadById(c *gin.Context, db *sql.DB) {
 	threadID := c.Param("id")
 	id, err := strconv.Atoi(threadID)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Invalid thread ID")
+		c.String(http.StatusBadRequest, "Invalid thread ID", err)
 		return
 	}
 
@@ -175,7 +170,7 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 		WHERE t.id = $1`, id)
 
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Error retrieving thread and messages")
+		c.String(http.StatusInternalServerError, "Error retrieving thread and messages", err)
 		return
 	}
 	defer func(rows *sql.Rows) {
@@ -190,7 +185,7 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Error scanning rows")
+			c.String(http.StatusInternalServerError, "Error scanning rows", err)
 			return
 		}
 		thread.Messages = append(thread.Messages, message)
@@ -205,12 +200,8 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 
 func UpdateThread(c *gin.Context, db *sql.DB) {
 	threadId, ok := c.GetPostForm("id")
-
 	title, ok := c.GetPostForm("title")
-	if len(title) < 2 {
-		GetThreads(c, db)
-		return
-	}
+
 	if !ok {
 		fmt.Println("EROARE ")
 	}
@@ -223,8 +214,7 @@ func UpdateThread(c *gin.Context, db *sql.DB) {
 
 	_, err := db.Exec("update message set message=$1 where id=$2", message, messageId)
 	if err != nil {
-		fmt.Println("Error updating message", err)
-		c.String(http.StatusInternalServerError, "Error deleting messages")
+		c.String(http.StatusInternalServerError, "Error deleting messages", err)
 		return
 	}
 
@@ -233,5 +223,6 @@ func UpdateThread(c *gin.Context, db *sql.DB) {
 		fmt.Println("Error updating thread", err)
 		return
 	}
-	GetThreads(c, db)
+	c.Redirect(http.StatusFound, string("/threads/"+threadId))
+
 }

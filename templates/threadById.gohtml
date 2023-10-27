@@ -7,13 +7,12 @@
     <h3>
         <span>  {{ .title }} </span> with id {<span> {{.id}}</span> }
     </h3>
-
+    <hr>
     {{- range $message := .messages }}
         {{if $message.Message}}
-            <div class="message">{{ $message.Message }}</div>
+            <div class="message">Message: {{ $message.Message }}</div>
         {{end}}
     {{- end }}
-    <hr/>
 
     </html>
 
@@ -73,7 +72,7 @@
         }
 
         span {
-            color: cadetblue;
+            color: yellow;
         }
 
     </style>
