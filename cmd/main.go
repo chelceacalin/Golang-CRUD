@@ -1,7 +1,7 @@
 package main
 
 import (
-	"First/structs"
+	"First/model"
 	"context"
 	"database/sql"
 	"fmt"
@@ -24,14 +24,15 @@ func main() {
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
-	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Welcome Gin Server")
-	})
 
 	db, err := sql.Open("pgx", "user=workshop_go password=pass host=localhost port=5433 database=workshop_go sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	router.GET("/", func(c *gin.Context) {
+		getThreads(c, db)
+	})
 
 	router.GET("/threads", func(c *gin.Context) {
 		getThreads(c, db)
@@ -96,11 +97,11 @@ func getThreads(c *gin.Context, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	threadsMap := make(map[int]*structs.Thread)
+	threadsMap := make(map[int]*model.Thread)
 
 	for rows.Next() {
-		var thread structs.Thread
-		var message structs.Message
+		var thread model.Thread
+		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
 			fmt.Println("ciuciu", err)
@@ -112,12 +113,12 @@ func getThreads(c *gin.Context, db *sql.DB) {
 		if ok {
 			existingThread.Messages = append(existingThread.Messages, message)
 		} else {
-			thread.Messages = []structs.Message{message}
+			thread.Messages = []model.Message{message}
 			threadsMap[thread.Id] = &thread
 		}
 	}
 
-	var threads []structs.Thread
+	var threads []model.Thread
 	for _, thread := range threadsMap {
 		threads = append(threads, *thread)
 	}
@@ -149,9 +150,9 @@ func getThreadById(c *gin.Context, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	var thread structs.Thread
+	var thread model.Thread
 	for rows.Next() {
-		var message structs.Message
+		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
 			fmt.Println("gucci", err)
@@ -253,9 +254,9 @@ func editThreadById(c *gin.Context, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	var thread structs.Thread
+	var thread model.Thread
 	for rows.Next() {
-		var message structs.Message
+		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
 			fmt.Println("gucci", err)
