@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"log"
+	"math/rand"
 	"net/http"
 	"os/signal"
 	"strconv"
@@ -46,6 +47,10 @@ func main() {
 
 	router.GET("/addThread/threads", func(c *gin.Context) {
 		addThread(c, db)
+	})
+
+	router.POST("/addThread/threads", func(c *gin.Context) {
+		addnewThread(c, db)
 	})
 
 	srv := &http.Server{
@@ -183,4 +188,35 @@ func deleteThreadById(c *gin.Context, db *sql.DB) {
 
 func addThread(c *gin.Context, db *sql.DB) {
 	c.HTML(http.StatusOK, "addThread/thread.tmpl", gin.H{})
+}
+
+func addnewThread(c *gin.Context, db *sql.DB) {
+	id := rand.Intn(2147483647)
+	title, ok := c.GetPostForm("title")
+	if !ok {
+		fmt.Println("EROARE ")
+	}
+
+	message, ok := c.GetPostForm("message")
+	if !ok {
+		fmt.Println("EROARE Mesage ")
+	}
+	messageId := strconv.Itoa(rand.Intn(2147483647))
+
+	fmt.Println("message_id:", messageId)
+	fmt.Println("message:", message)
+	_, err := db.Exec("insert into message values($1,$2,$3)", messageId, message, id)
+	if err != nil {
+		fmt.Println("Error inserting message", err)
+		c.String(http.StatusInternalServerError, "Error deleting messages")
+		return
+	}
+
+	_, err = db.Exec("insert into Thread values($1,$2)", id, title)
+	if err != nil {
+		fmt.Println("Error inserting thread", err)
+		c.String(http.StatusInternalServerError, "Error deleting messages")
+		return
+	}
+	getThreads(c, db)
 }

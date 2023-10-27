@@ -5,21 +5,31 @@
 
         <form method="post">
         <label>Title:</label>
-        <input type="text">
+        <input type="text" name="title" placeholder="title">
+            <br><br>
+            <label>Message:</label>
+            <input type="text" name="message" placeholder="message">
+            <br><br>
+
             <button type="submit">Save</button>
+            <button href="/threads">Cancel</button>
         </form>
     </div>
 
 
-    <a href="/threads">Cancel</a>
+
 
 
     <br>
     <style>
         .container{
-            margin: 25%;
+            margin-top: 15%;
+            margin-left: 15%;
+            margin-right: 15%;
             background-color: white;
             border-radius: 25px;
+            width: auto;
+            padding: 20px;
 
         }
 
