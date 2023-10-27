@@ -62,7 +62,6 @@ func GetThreadById(c *gin.Context, db *sql.DB) {
 	threadID := c.Param("id")
 	id, err := strconv.Atoi(threadID)
 	if err != nil {
-		fmt.Println("tactu", err)
 		c.String(http.StatusBadRequest, "Invalid thread ID")
 		return
 	}
@@ -73,7 +72,6 @@ func GetThreadById(c *gin.Context, db *sql.DB) {
 		WHERE t.id = $1`, id)
 
 	if err != nil {
-		fmt.Println("rahat", err)
 		c.String(http.StatusInternalServerError, "Error retrieving thread and messages")
 		return
 	}
@@ -89,7 +87,6 @@ func GetThreadById(c *gin.Context, db *sql.DB) {
 		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
-			fmt.Println("gucci", err)
 			c.String(http.StatusInternalServerError, "Error scanning rows")
 			return
 		}
@@ -106,7 +103,6 @@ func GetThreadById(c *gin.Context, db *sql.DB) {
 func DeleteThreadById(c *gin.Context, db *sql.DB) {
 	threadId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Println("Invalid thread ID")
 		c.String(http.StatusBadRequest, "Invalid thread ID")
 		return
 	}
@@ -149,8 +145,6 @@ func AddnewThread(c *gin.Context, db *sql.DB) {
 	}
 	messageId := strconv.Itoa(rand.Intn(2147483647))
 
-	fmt.Println("message_id:", messageId)
-	fmt.Println("message:", message)
 	_, err := db.Exec("insert into message values($1,$2,$3)", messageId, message, id)
 	if err != nil {
 		fmt.Println("Error inserting message", err)
@@ -171,7 +165,6 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 	threadID := c.Param("id")
 	id, err := strconv.Atoi(threadID)
 	if err != nil {
-		fmt.Println("tactu", err)
 		c.String(http.StatusBadRequest, "Invalid thread ID")
 		return
 	}
@@ -182,7 +175,6 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 		WHERE t.id = $1`, id)
 
 	if err != nil {
-		fmt.Println("rahat", err)
 		c.String(http.StatusInternalServerError, "Error retrieving thread and messages")
 		return
 	}
@@ -198,7 +190,6 @@ func EditThreadById(c *gin.Context, db *sql.DB) {
 		var message model.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
-			fmt.Println("gucci", err)
 			c.String(http.StatusInternalServerError, "Error scanning rows")
 			return
 		}

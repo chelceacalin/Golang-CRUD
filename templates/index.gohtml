@@ -4,27 +4,27 @@
     <a href="/addThread/threads" class="nav">Add</a>
 
     {{- range $thread := .threads }}
-        <div id="container">
-            <h3> Click: <a href="/threads/{{ $thread.Id }}">{{ $thread.Title }}</a></h3>
-            <ul>
-                {{- range $message := $thread.Messages }}
-               <div class="message">   Message:   {{ $message.Message }}</div>
-                {{- else }}
-                    <li>No messages available</li>
-                {{- end }}
-            </ul>
+    <div id="container">
+        <h3> Click: <a href="/threads/{{ $thread.Id }}">{{ $thread.Title }}</a></h3>
+        <ul>
+            {{- range $message := $thread.Messages }}
+                <div class="message"> Message: {{ $message.Message }}</div>
+            {{- else }}
+                <li>No messages available</li>
+            {{- end }}
+        </ul>
         <form action="/threads/{{$thread.Id}}" method="POST">
             <input type="hidden" name="_method" value="DELETE"/>
             <input type="submit" value="Delete">
         </form>
         <hr/>
-    {{ else }}
-        <p>No threads available</p>
-    {{- end }}
-        </div>
+        {{ else }}
+            <p>No threads available</p>
+        {{- end }}
+    </div>
 
     <style>
-       #container{
+        #container {
             display: block;
             margin: 25px 5% 2% 5%;
         }
@@ -61,7 +61,6 @@
             letter-spacing: 2px;
             font-weight: bold;
             color: white;
-
         }
 
         a {
