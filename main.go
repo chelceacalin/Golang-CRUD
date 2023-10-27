@@ -1,6 +1,7 @@
 package main
 
 import (
+	"First/structs"
 	"context"
 	"database/sql"
 	"fmt"
@@ -14,18 +15,6 @@ import (
 	"syscall"
 	"time"
 )
-
-type Thread struct {
-	Id       int
-	Title    string
-	Messages []Message
-}
-
-type Message struct {
-	Id        *int
-	Message   *string
-	Thread_id *int
-}
 
 func main() {
 	// Create context that listens for the interrupt signal from the OS.
@@ -95,11 +84,11 @@ func getThreads(c *gin.Context, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	threadsMap := make(map[int]*Thread)
+	threadsMap := make(map[int]*structs.Thread)
 
 	for rows.Next() {
-		var thread Thread
-		var message Message
+		var thread structs.Thread
+		var message structs.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
 			fmt.Println("ciuciu", err)
@@ -111,12 +100,12 @@ func getThreads(c *gin.Context, db *sql.DB) {
 		if ok {
 			existingThread.Messages = append(existingThread.Messages, message)
 		} else {
-			thread.Messages = []Message{message}
+			thread.Messages = []structs.Message{message}
 			threadsMap[thread.Id] = &thread
 		}
 	}
 
-	var threads []Thread
+	var threads []structs.Thread
 	for _, thread := range threadsMap {
 		threads = append(threads, *thread)
 	}
@@ -148,9 +137,9 @@ func getThreadById(c *gin.Context, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	var thread Thread
+	var thread structs.Thread
 	for rows.Next() {
-		var message Message
+		var message structs.Message
 		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
 		if err != nil {
 			fmt.Println("gucci", err)
