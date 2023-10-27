@@ -44,7 +44,7 @@ func main() {
 		deleteThreadById(c, db)
 	})
 
-	router.GET("/threads/add", func(c *gin.Context) {
+	router.GET("/addThread/threads", func(c *gin.Context) {
 		addThread(c, db)
 	})
 
@@ -182,5 +182,5 @@ func deleteThreadById(c *gin.Context, db *sql.DB) {
 }
 
 func addThread(c *gin.Context, db *sql.DB) {
-	c.HTML(http.StatusOK, "addForm/thread.tmpl", gin.H{})
+	c.HTML(http.StatusOK, "addThread/thread.tmpl", gin.H{})
 }
