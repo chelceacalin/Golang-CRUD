@@ -1,6 +1,6 @@
 {{ define "editById/thread.tmpl" }}
-    <html>
-    <a href="/threads">View All</a>
+    <html lang="en">
+    <a href="/threads" class="nav">View All</a>
     <h3 class="edit">
         Edit
     </h3>
@@ -8,16 +8,23 @@
     <div class="container">
 
         <form method="post" action="/update/{{.id}}">
-            <input hidden="hidden" name="id" value="{{.id}}">
-            <label>Title:</label>
+            <label>
+                <input hidden="hidden" name="id" value="{{.id}}">
+            </label>
+            <label>Title:
             <input type="text" name="title" placeholder="title" value="{{.title}}">
+            </label>
             <br><br>
             <label>Message:</label>
 
             {{- range $message := .messages }}
                 {{if $message.Message}}
-                    <input hidden="hidden" name="messageId" value="{{$message.Id}}">
-                    <input type="text" name="message" placeholder="message" value="{{ $message.Message }}">
+                    <label>
+                        <input hidden="hidden" name="messageId" value="{{$message.Id}}">
+                    </label>
+                    <label>
+                        <input type="text" name="message" placeholder="message" value="{{ $message.Message }}">
+                    </label>
                 {{end}}
             {{- end }}
 
@@ -30,62 +37,78 @@
 
 
 
-    <hr/>
-
     </html>
 
-        <style>
-            .edit{
-                margin-top: 15%;
-                display: block;
-                align-items: center;
-                justify-items: center;
-                margin-left: 45%;
-            }
-            .container{
-                margin-left: 15%;
-                margin-right: 15%;
-                background-color: white;
-                border-radius: 25px;
-                width: auto;
-                padding: 20px;
+    <style>
 
-            }
-            body{
-                margin: 0;
-                padding: 0;
-                background: #c31432; /* fallback for old browsers */
-                background: -webkit-linear-gradient(to right, #c31432, #240b36); /* Chrome 10-25, Safari 5.1-6 */
-                background: linear-gradient(to right, #c31432, #240b36); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            }
-            h3 {
-                margin-left: 2px;
-                font-family:"Inter Semi Bold";
-                font-size: 11px;
-                line-height: 14px;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                font-weight: bold;
-                color: white;
+        .nav {
+            text-decoration: none;
+            color: white;
+            background-color: rgba(177, 80, 80, 0.72);
+            display: inline-block;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 8px;
 
-            }
+        }
 
-            a{
-                text-decoration: none;
-                color: burlywood;
-                background-color: rgba(177, 80, 80, 0.72);
-                display: block;
-                padding: 5px;
+        .nav:hover {
+            background-color: brown;
+        }
 
-            }
-            .message{
-                margin-left: 15px;
-                display: flex;
-                margin-top: 10px;
-                color: white;
-            }
-            span{
-                color: cadetblue;
-            }
-        </style>
+
+        .edit {
+            margin-top: 25px;
+            display: block;
+            align-items: center;
+            justify-items: center;
+            margin-left: 45%;
+        }
+
+        .container {
+            margin-left: 15%;
+            margin-right: 15%;
+            background-color: white;
+            border-radius: 25px;
+            width: auto;
+            padding: 20px;
+
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #c31432;
+            background: -webkit-linear-gradient(to right, #c31432, #240b36);
+            background: linear-gradient(to right, #c31432, #240b36);
+        }
+
+        h3 {
+            margin-left: 2px;
+            font-family: "Inter Semi Bold", serif;
+            font-size: 11px;
+            line-height: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: white;
+
+        }
+
+        a {
+            text-decoration: none;
+            color: burlywood;
+            background-color: rgba(177, 80, 80, 0.72);
+            display: block;
+            padding: 5px;
+
+        }
+
+
+        span {
+            color: cadetblue;
+        }
+    </style>
 {{ end }}

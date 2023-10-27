@@ -1,11 +1,11 @@
 {{ define "threadsById/thread.tmpl" }}
-    <html>
+    <html lang="en">
     <span>
-    <a href="/threads">View All</a>
-    <a href="/edit/{{.id}}">Edit</a>
+    <a href="/threads" class="nav">View All</a>
+    <a href="/edit/{{.id}}" class="nav">Edit</a>
     </span>
     <h3>
-      <span>  {{ .title }} </span> with id {<span> {{.id}}</span> }
+        <span>  {{ .title }} </span> with id {<span> {{.id}}</span> }
 
     </h3>
 
@@ -19,42 +19,65 @@
 
     </html>
 
-        <style>
-            body{
-                margin: 0;
-                padding: 0;
-                background: #c31432; /* fallback for old browsers */
-                background: -webkit-linear-gradient(to right, #c31432, #240b36); /* Chrome 10-25, Safari 5.1-6 */
-                background: linear-gradient(to right, #c31432, #240b36); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            }
-            h3 {
-                margin-left: 2px;
-                font-family:"Inter Semi Bold";
-                font-size: 11px;
-                line-height: 14px;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                font-weight: bold;
-                color: white;
+    <style>
 
-            }
+        .nav {
+            text-decoration: none;
+            color: white;
+            background-color: rgba(177, 80, 80, 0.72);
+            display: inline-block;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 10px;
+            padding-bottom: 8px;
 
-            a{
-                text-decoration: none;
-                color: burlywood;
-                background-color: rgba(177, 80, 80, 0.72);
-                display: inline-block;
-                padding: 5px;
+        }
 
-            }
-            .message{
-                margin-left: 15px;
-                display: flex;
-                margin-top: 10px;
-                color: white;
-            }
-            span{
-                color: cadetblue;
-            }
-        </style>
+        .nav:hover {
+            background-color: brown;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            padding-left: 5px;
+            padding-top: 5px;
+            background: #c31432;
+            background: -webkit-linear-gradient(to right, #c31432, #240b36);
+            background: linear-gradient(to right, #c31432, #240b36);
+        }
+
+        h3 {
+            margin-left: 2px;
+            font-family: "Inter Semi Bold", serif;
+            font-size: 11px;
+            line-height: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: white;
+
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            background-color: rgba(177, 80, 80, 0.72);
+            display: inline-block;
+            padding: 5px;
+
+        }
+
+        .message {
+            margin-left: 15px;
+            display: flex;
+            margin-top: 10px;
+            color: white;
+        }
+
+        span {
+            color: cadetblue;
+        }
+    </style>
 {{ end }}
