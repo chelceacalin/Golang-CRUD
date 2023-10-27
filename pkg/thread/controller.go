@@ -128,7 +128,7 @@ func DeleteThreadById(c *gin.Context, db *sql.DB) {
 	GetThreads(c, db)
 }
 
-func AddThread(c *gin.Context) {
+func AddThread(c *gin.Context, db *sql.DB) {
 	c.HTML(http.StatusOK, "addThread/thread.tmpl", gin.H{})
 }
 
