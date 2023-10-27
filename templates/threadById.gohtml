@@ -1,10 +1,12 @@
 {{ define "threadsById/thread.tmpl" }}
     <html>
+    <span>
     <a href="/threads">View All</a>
-
-
+    <a href="/edit/{{.id}}">Edit</a>
+    </span>
     <h3>
       <span>  {{ .title }} </span> with id {<span> {{.id}}</span> }
+
     </h3>
 
 
@@ -41,7 +43,7 @@
                 text-decoration: none;
                 color: burlywood;
                 background-color: rgba(177, 80, 80, 0.72);
-                display: block;
+                display: inline-block;
                 padding: 5px;
 
             }

@@ -52,6 +52,13 @@ func main() {
 	router.POST("/addThread/threads", func(c *gin.Context) {
 		addnewThread(c, db)
 	})
+	router.GET("/edit/:id", func(c *gin.Context) {
+		editThreadById(c, db)
+	})
+
+	router.POST("/update/:id", func(c *gin.Context) {
+		updateThread(c, db)
+	})
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -193,6 +200,10 @@ func addThread(c *gin.Context, db *sql.DB) {
 func addnewThread(c *gin.Context, db *sql.DB) {
 	id := rand.Intn(2147483647)
 	title, ok := c.GetPostForm("title")
+	if len(title) < 2 {
+		getThreads(c, db)
+		return
+	}
 	if !ok {
 		fmt.Println("EROARE ")
 	}
@@ -216,6 +227,79 @@ func addnewThread(c *gin.Context, db *sql.DB) {
 	if err != nil {
 		fmt.Println("Error inserting thread", err)
 		c.String(http.StatusInternalServerError, "Error deleting messages")
+		return
+	}
+	getThreads(c, db)
+}
+
+func editThreadById(c *gin.Context, db *sql.DB) {
+	threadID := c.Param("id")
+	id, err := strconv.Atoi(threadID)
+	if err != nil {
+		fmt.Println("tactu", err)
+		c.String(http.StatusBadRequest, "Invalid thread ID")
+		return
+	}
+
+	rows, err := db.Query(`SELECT t.id, t.title, m.id, m.message, m.thread_id
+		FROM thread t
+		LEFT JOIN message m ON t.id = m.thread_id
+		WHERE t.id = $1`, id)
+
+	if err != nil {
+		fmt.Println("rahat", err)
+		c.String(http.StatusInternalServerError, "Error retrieving thread and messages")
+		return
+	}
+	defer rows.Close()
+
+	var thread structs.Thread
+	for rows.Next() {
+		var message structs.Message
+		err := rows.Scan(&thread.Id, &thread.Title, &message.Id, &message.Message, &message.Thread_id)
+		if err != nil {
+			fmt.Println("gucci", err)
+			c.String(http.StatusInternalServerError, "Error scanning rows")
+			return
+		}
+		thread.Messages = append(thread.Messages, message)
+	}
+
+	c.HTML(http.StatusOK, "editById/thread.tmpl", gin.H{
+		"id":       thread.Id,
+		"title":    thread.Title,
+		"messages": thread.Messages,
+	})
+}
+
+func updateThread(c *gin.Context, db *sql.DB) {
+	threadId, ok := c.GetPostForm("id")
+
+	title, ok := c.GetPostForm("title")
+	if len(title) < 2 {
+		getThreads(c, db)
+		return
+	}
+	if !ok {
+		fmt.Println("EROARE ")
+	}
+
+	message, ok := c.GetPostForm("message")
+	if !ok {
+		fmt.Println("EROARE Mesage ")
+	}
+	messageId, ok := c.GetPostForm("messageId")
+
+	_, err := db.Exec("update message set message=$1 where id=$2", message, messageId)
+	if err != nil {
+		fmt.Println("Error updating message", err)
+		c.String(http.StatusInternalServerError, "Error deleting messages")
+		return
+	}
+
+	_, err = db.Exec("update thread set title=$1 where id=$2", title, threadId)
+	if err != nil {
+		fmt.Println("Error updating thread", err)
 		return
 	}
 	getThreads(c, db)
