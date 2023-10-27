@@ -1,34 +1,25 @@
-{{ define "threads/thread.tmpl" }}
+{{ define "addForm/thread.tmpl" }}
     <html>
 
-    <a href="/threads/addThread">Add</a>
+    <div class="container">
 
-    {{- range $thread := .threads }}
-        <div>
-            <h3> Click: <a href="/threads/{{ $thread.Id }}">{{ $thread.Title }}</a></h3>
-            <ul>
-                {{- range $message := $thread.Messages }}
-                    <div class="message">{{ $message.Message }}</div>
-                {{- else }}
-                    <li>No messages available</li>
-                {{- end }}
-            </ul>
-        </div>
-        <form action="/threads/{{$thread.Id}}" method="POST">
-            <input type="hidden" name="_method" value="DELETE"/>
-            <input type="submit" value="Delete">
-        </form>
-        <hr/>
+        <label>Title:</label>
+        <input type="text">
 
-    {{ else }}
-        <p>No threads available</p>
+    </div>
 
 
-    {{- end }}
+    <a href="/threads">Cancel</a>
 
 
     <br>
     <style>
+        .container{
+            margin: 25%;
+            background-color: white;
+            border-radius: 25px;
+
+        }
 
         body {
             background: #c31432; /* fallback for old browsers */

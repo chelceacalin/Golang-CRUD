@@ -54,6 +54,11 @@ func main() {
 	router.POST("/threads/:id", func(c *gin.Context) {
 		deleteThreadById(c, db)
 	})
+
+	router.GET("/threads/add", func(c *gin.Context) {
+		addThread(c, db)
+	})
+
 	srv := &http.Server{
 		Addr:    ":8080",
 		Handler: router,
@@ -185,4 +190,8 @@ func deleteThreadById(c *gin.Context, db *sql.DB) {
 	}
 
 	getThreads(c, db)
+}
+
+func addThread(c *gin.Context, db *sql.DB) {
+	c.HTML(http.StatusOK, "addForm/thread.tmpl", gin.H{})
 }
